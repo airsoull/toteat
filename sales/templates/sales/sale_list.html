@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% load i18n humanize %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{% trans 'dashboard'|capfirst %}</h1>
+  </div>
+  <!-- Content Row -->
+  <div class="row">
+    <div id="loading-div" class="col-12 mb-4 d-none">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">{% trans 'new data'|capfirst %}</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-10">
+              <h4 class="mt-2">
+                {% blocktrans %}
+                There is new sales information. Do you want to refresh the page?
+                {% endblocktrans %}
+              </h4>
+            </div>
+            <div class="col-2">
+              <a href="{{ request.path }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-redo mr-2"></i>
+                {% trans 'reload'|capfirst %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading-spinner-div" class="col-12 mb-4 d-none">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">{% trans 'wait while the data loads'|capfirst %}</h6>
+        </div>
+        <div class="card-body text-center">
+          <i class="fas fa-spinner fa-7x fa-pulse"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings Card Example -->
+    <div class="col-xl-6 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                {% trans 'earnings'|capfirst %}</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                $ {{ sum_total|intcomma }}
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-calendar fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6 col-md-6 mb-4">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                {% trans 'total sales' %}</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ sales.count }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Content Row -->
+
+  <div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+      <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="chart-area">
+            <canvas id="myAreaChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Row -->
+  <div class="row">
+
+    <!-- Content Column -->
+    <div class="col-lg-12 mb-4">
+
+      <!-- Project Card Example -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">{% trans 'sales'|capfirst %}</h6>
+        </div>
+        <div class="card-body">
+          <table class="table table-striped" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>{% trans 'zone'|capfirst %}</th>
+                <th>{% trans 'table'|capfirst %}</th>
+                <th>{% trans 'date opened'|capfirst %}</th>
+                <th>{% trans 'date closed'|capfirst %}</th>
+                <th>{% trans 'waiter'|capfirst %}</th>
+                <th>{% trans 'cashier'|capfirst %}</th>
+                <th>{% trans 'diners'|capfirst %}</th>
+                <th>{% trans 'total'|capfirst %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sale in sale_list %}
+              <tr>
+                <td>{{ sale.zone.name }}</td>
+                <td>{{ sale.table.number }}</td>
+                <td>{{ sale.date_opened }}</td>
+                <td>{{ sale.date_closed }}</td>
+                <td>{{ sale.waiter }}</td>
+                <td>{{ sale.cashier }}</td>
+                <td>{{ sale.diners }}</td>
+                <td>${{ sale.total|intcomma }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% include 'includes/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock content %}

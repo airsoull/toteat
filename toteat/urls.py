@@ -19,9 +19,13 @@ from django.urls import include
 from django.conf.urls.static import static
 from django.conf import settings
 
+from sales.views import SaleListView
+
 urlpatterns = [
+    path('', SaleListView.as_view(), name='home'),
+    path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     import debug_toolbar

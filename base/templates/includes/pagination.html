@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<div class="row">
+  <div class="col-6">
+    {% blocktrans with start_index=page_obj.start_index end_index=page_obj.end_index %}
+    showing results from {{start_index}} to {{end_index}}
+    {% endblocktrans %}
+  </div>
+  <div class="col-6">
+    <div class="float-right">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+
+        {% for page in page_obj.paginator.page_range %}
+
+        {% if page == page_obj.number %}
+        <li class="page-item active"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+        {% elif page < page_obj.number|add:4 and page > page_obj.number|add:-4 %}
+        <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+        {% endif %}
+
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>

@@ -15,6 +15,9 @@ from sales import utils
 from sales.models import Payment
 from sales.models import Product
 
+# managers
+from sales.managers.sale import SaleQuerySet
+
 
 class Sale(BaseModel):
     external_id = models.CharField(
@@ -59,6 +62,8 @@ class Sale(BaseModel):
         decimal_places=2,
     )
 
+    objects = SaleQuerySet.as_manager()
+
     class Meta:
         ordering = (
             'created_at',
@@ -67,7 +72,28 @@ class Sale(BaseModel):
     def __str__(self):
         return self.external_id
 
+    def get_months(self) -> list:
+        return []
+
     @classmethod
+    def get_data(cls) -> list:
+        total_by_months = {
+            d['date_opened__month']: d['total_by_month']
+            for d in cls.objects.total_by_months()
+        }
+
+        data = []
+        for key, month in sorted(utils.get_months().items()):
+            month_data = {'month': month, 'value': 0}
+            if key in total_by_months:
+                month_data['value'] = total_by_months[key]
+
+            data.append(
+                month_data
+            )
+        return data
+
+    @ classmethod
     def create_sales_from_external_data(cls):
         sales_data = services.get_sales_data()
         if not sales_data:
@@ -97,6 +123,9 @@ class Sale(BaseModel):
             sales.append(
                 cls(**data)
             )
+
+        if not sales:
+            return
 
         cls.objects.bulk_create(sales)
 

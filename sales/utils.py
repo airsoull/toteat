@@ -1,5 +1,7 @@
 # django
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
+
 
 # models
 from sales.models import Zone
@@ -94,3 +96,20 @@ def get_key_and_value_from_reference(reference, key_data, value_data):
         key = reference[key_data]
 
     return key, value
+
+
+def get_months() -> dict:
+    return {
+        1: _('january'),
+        2: _('february'),
+        3: _('march'),
+        4: _('april'),
+        5: _('may'),
+        6: _('june'),
+        7: _('july'),
+        8: _('august'),
+        9: _('september'),
+        10: _('october'),
+        11: _('november'),
+        12: _('december'),
+    }
